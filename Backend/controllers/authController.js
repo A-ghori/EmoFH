@@ -1,8 +1,7 @@
-
-
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/email');  // Email utility import
 
 // Register User
 exports.registerUser = async (req, res) => {
@@ -26,6 +25,15 @@ exports.registerUser = async (req, res) => {
             email,
             password: hashedPassword
         });
+
+        // After making user then send welcome email via nodemailer
+        try {
+            const subject = 'Welcome to EmoFH-AI!';
+            const htmlContent = `<h1>Hello ${newUser.name}</h1><p>Thank you for registering at EmoFH.</p>`;
+            await sendEmail(newUser.email, subject, htmlContent);
+        } catch (error) {
+            console.error('Email sending failed:', error);
+        }
 
         res.status(201).json({
             message: 'User registered successfully',

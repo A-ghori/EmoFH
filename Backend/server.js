@@ -1,7 +1,18 @@
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+const mongoose = require('mongoose');
+require('dotenv').config();
 
+const mongoURI = process.env.MONGO_URI;
+
+mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 10
+})
+.then(() => console.log(' **MongoDB connected**'))
+.catch((err) => console.error(' MongoDB connection error:', err));
 
 const app = express();
 
